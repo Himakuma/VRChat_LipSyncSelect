@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using VRCSDK2;
 
-namespace Assets.ExpansionTools.LipSyncSelect.tmp
+namespace ExpansionTools.LipSyncSelect.tmp
 {
     public class AiueoSilPPTmp : ITmpInterface
     {

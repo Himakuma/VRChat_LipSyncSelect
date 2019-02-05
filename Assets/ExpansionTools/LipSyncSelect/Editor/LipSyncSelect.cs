@@ -1,4 +1,5 @@
-﻿using Assets.ExpansionTools.LipSyncSelect.tmp;
+﻿using ExpansionTools.LipSyncSelect.tmp;
+using BearUnityLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using VRCSDK2;
+using System.IO;
 
 [CustomEditor(typeof(VRC_AvatarDescriptor))]
 public class LipSyncSelect : AvatarDescriptorEditor
@@ -36,20 +38,43 @@ public class LipSyncSelect : AvatarDescriptorEditor
 
     }
 
+
+    private void LoadFileMenu(GenericMenu menu)
+    {
+        menu.AddSeparator("");
+        menu.AddItem(new GUIContent("Lip Sync Auto Select(.*[^A-Za-z]sil$)"), false, () => {
+            LipSyncAutoSelect();
+        });
+
+        // 配置済みクラスから、リップシンクのリストを作成
+        var lipTmps = new Dictionary<string, ITmpInterface>();
+        foreach (var assemblie in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            foreach (var classInfo in assemblie.GetTypes().Where(t => t.IsClass && t.Namespace == @"ExpansionTools.LipSyncSelect.tmp").ToList())
+            {
+                lipTmps.Add(classInfo.Name.Substring(0, classInfo.Name.Length - 3), (ITmpInterface)Activator.CreateInstance(classInfo));
+            }
+        }
+
+        // 文字列ソート
+        var keys = lipTmps.Keys.ToArray();
+        Array.Sort(keys);
+
+        foreach(string lipSyncName in keys)
+        {
+            menu.AddItem(new GUIContent(lipSyncName), false, () => {
+                LipSyncAutoSelect(lipTmps[lipSyncName]);
+            });
+        }
+    }
+
+
     private void RightMenu(Rect rect)
     {
         GUI.enabled = true;
         if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
         {
             GenericMenu menu = new GenericMenu();
-            menu.AddItem(new GUIContent("Lip Sync Auto Select(.*[^A-Za-z]sil$)"), false, () => {
-                LipSyncAutoSelect();
-            });
-
-            menu.AddItem(new GUIContent("Lip Sync Auto Select(AiueoSilPP)"), false, () => {
-                LipSyncAutoSelect(new AiueoSilPPTmp());
-            });
-
             menu.AddItem(new GUIContent("Copy"), false, () => {
                 LipSyncCopy();
             });
@@ -58,6 +83,12 @@ public class LipSyncSelect : AvatarDescriptorEditor
                 LipSyncPaste();
             });
 
+            menu.AddItem(new GUIContent("Export"), false, () => {
+                LipSyncExport();
+            });
+
+
+            LoadFileMenu(menu);
             menu.ShowAsContext();
         }
     }
@@ -104,6 +135,36 @@ public class LipSyncSelect : AvatarDescriptorEditor
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// アクティブの情報出力
+    /// </summary>
+    private void LipSyncExport()
+    {
+        string tmpPath = Path.Combine(Application.dataPath, "ExpansionTools/LipSyncSelect/tmp/ClassTemplate.cs.template");
+        string exportText = BearFileUtil.GetAllText(tmpPath);
+
+
+        VRC_AvatarDescriptor avatarDescriptor = GetVRCAvatarDescriptor();
+        if (avatarDescriptor.lipSync == VRC_AvatarDescriptor.LipSyncStyle.VisemeBlendShape)
+        {
+            var visemeBlendShapes = avatarDescriptor.VisemeBlendShapes;
+
+            List<string> blendShapeNames = GetBlendShapeNames();
+            for (int i = 0; i < visemeBlendShapes.Length; i++)
+            {
+                string[] matchNames = blendShapeNames.Where(t => t == visemeBlendShapes[i]).ToArray();
+                if (0 < matchNames.Length)
+                {
+                    string replaceKey = "@" + ((VRC_AvatarDescriptor.Viseme)i).ToString() + "@";
+                    exportText = exportText.Replace(replaceKey, matchNames[0]);
+                }
+            }
+        }
+        var exportWindow = EditorWindow.GetWindow<LipSyncExport>(true);
+        exportWindow.exportText = exportText;
+        exportWindow.position = new Rect(200f, 200f, 300f, 100f);
     }
 
     /// <summary>

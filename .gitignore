@@ -7,6 +7,10 @@ Assets/AssetStoreTools*
 Assets/VRCSDK*
 Assets/Plugins*
 ProjectSettings/*
+Assets/SIN*
+Assets/*.unity.*
+Assets/DynamicBone*
+
 
 
 # Visual Studio cache directory
@@ -39,3 +43,4 @@ sysinfo.txt
 *.apk
 *.unitypackage
 *.dll
+*.unity

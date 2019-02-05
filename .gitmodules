@@ -1,0 +1,6 @@
+[submodule "test"]
+	path = test
+	url = https://github.com/Himakuma/BearUnityLib.git
+[submodule "Assets/BearUnityLib"]
+	path = Assets/BearUnityLib
+	url = https://github.com/Himakuma/BearUnityLib.git

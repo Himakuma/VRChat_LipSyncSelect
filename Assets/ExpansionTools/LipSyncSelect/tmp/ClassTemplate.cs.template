@@ -1,0 +1,30 @@
+using System.Collections.Generic;
+using VRCSDK2;
+
+namespace ExpansionTools.LipSyncSelect.tmp
+{
+    public class @CLASS_NAME@Tmp : ITmpInterface
+    {
+        public Dictionary<VRC_AvatarDescriptor.Viseme, string> GetDataSet()
+        {
+            return new Dictionary<VRC_AvatarDescriptor.Viseme, string>
+            {
+                { VRC_AvatarDescriptor.Viseme.sil, "@sil@" },
+                { VRC_AvatarDescriptor.Viseme.PP,  "@PP@"  },
+                { VRC_AvatarDescriptor.Viseme.FF,  "@FF@"  },
+                { VRC_AvatarDescriptor.Viseme.TH,  "@TH@"  },
+                { VRC_AvatarDescriptor.Viseme.DD,  "@DD@"  },
+                { VRC_AvatarDescriptor.Viseme.kk,  "@kk@"  },
+                { VRC_AvatarDescriptor.Viseme.CH,  "@CH@"  },
+                { VRC_AvatarDescriptor.Viseme.SS,  "@SS@"  },
+                { VRC_AvatarDescriptor.Viseme.nn,  "@nn@"  },
+                { VRC_AvatarDescriptor.Viseme.RR,  "@RR@"  },
+                { VRC_AvatarDescriptor.Viseme.aa,  "@aa@"  },
+                { VRC_AvatarDescriptor.Viseme.E,   "@E@"   },
+                { VRC_AvatarDescriptor.Viseme.ih,  "@ih@"  },
+                { VRC_AvatarDescriptor.Viseme.oh,  "@oh@"  },
+                { VRC_AvatarDescriptor.Viseme.ou,  "@ou@"  }
+            };
+        }
+    }
+}

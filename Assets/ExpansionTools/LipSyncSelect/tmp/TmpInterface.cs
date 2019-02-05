@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VRCSDK2;
 
-namespace Assets.ExpansionTools.LipSyncSelect.tmp
+namespace ExpansionTools.LipSyncSelect.tmp
 {
     public interface ITmpInterface
     {
